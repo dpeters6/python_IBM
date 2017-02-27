@@ -29,7 +29,6 @@ if env_var is not None:
 elif env_var is None:
     local = True
 
-
 def get_mysql_conn():
     conn = connector.connect(host=mysql_creds['host'],
                              port=mysql_creds['port'],
@@ -76,7 +75,7 @@ def Welcome():
 @app.route('/mysql')
 def show_mysql():
 
-    df = query_bluemix('BLUEMIX').to_csv('name_table.csv')#to_html(classes='testclass', index=False)
+    df = query_bluemix('BLUEMIX').to_csv('~/nicholaiflask/name_table.csv')#to_html(classes='testclass', index=False)
     #df = pandas.read_csv('name_table.csv').to_html(classes='testclass')
     return render_template('mysql.html', tables=[df], titles=['test_title'])
 
