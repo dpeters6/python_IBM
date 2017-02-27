@@ -9,8 +9,10 @@
   {% endfor %}
 
   <h3>Insert into Name Table</h3>
+    <form action = "." method="POST"></form>
     <input type="text" name="firstname">
-    <input type="text" name="lastname" value="Insert">
+    <input type="text" name="lastname">
+    <input type="submit" name="insert", value="Insert">
 
-  <h2>Back to Main Page <a href={{ url_for("Welcome") }}></a></h2>
+  <h2>Back to <a href={{ url_for("Welcome") }}>Main Page</a></h2>
 </div>

@@ -14,7 +14,7 @@
 
 import os, json, pandas, requests
 from mysql import connector
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__, template_folder='static')
 
@@ -80,6 +80,15 @@ def show_mysql():
     #df = pandas.read_csv('name_table.csv').to_html(classes='testclass')
     return render_template('mysql.html', tables=[df], titles=['test_title'])
 
+
+@app.route('/mysql', methods=['POST'])
+def insert_mysql():
+    df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
+    text = request.form['text']
+    df = df.append(text)
+    return render_template('mysql.html', tables=[df], titles=['test_title'])
+
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
+    app.debug = True
     app.run(host='0.0.0.0', port=int(port))
