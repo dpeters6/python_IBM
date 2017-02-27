@@ -20,10 +20,14 @@ app = Flask(__name__, template_folder='static')
 
 env_var = os.getenv("VCAP_SERVICES")
 if env_var is not None:
+    local = False
     vcap = json.loads(env_var)
     mysql_creds = vcap['mysql'][0]['credentials']
     lt_creds = vcap['language_translator'][0]['credentials']
     SCHEMA = 'd4b34d227c2484ba6afcd7a02f3d7d977'
+
+elif env_var is None:
+    local = True
 
 
 def get_mysql_conn():
@@ -70,8 +74,10 @@ def Welcome():
 
 
 @app.route('/mysql')
-def showSql():
-    df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
+def show_mysql():
+
+    if not local:
+        df = query_bluemix('BLUEMIX').to_csv('name_table.csv')to_html(classes='testclass', index=False)
     # df = pandas.read_csv('test.csv').to_html(classes='testclass')
     return render_template('mysql.html', tables=[df], titles=['test_title'])
 
