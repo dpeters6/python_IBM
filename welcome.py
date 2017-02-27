@@ -16,12 +16,14 @@ import os, json, pandas, requests
 from mysql import connector
 from flask import Flask, jsonify, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='static')
 
-vcap = json.loads(os.getenv("VCAP_SERVICES"))
-mysql_creds = vcap['mysql'][0]['credentials']
-lt_creds = vcap['language_translator'][0]['credentials']
-SCHEMA = 'd4b34d227c2484ba6afcd7a02f3d7d977'
+env_var = os.getenv("VCAP_SERVICES")
+if env_var is not None:
+    vcap = json.loads(env_var)
+    mysql_creds = vcap['mysql'][0]['credentials']
+    lt_creds = vcap['language_translator'][0]['credentials']
+    SCHEMA = 'd4b34d227c2484ba6afcd7a02f3d7d977'
 
 
 def get_mysql_conn():
@@ -70,8 +72,8 @@ def Welcome():
 @app.route('/mysql')
 def showSql():
     df = query_bluemix('BLUEMIX').to_html(classes='testclass')
-    # return df.to_html()
-    return render_template('static/mysql.html', tables=[df], titles=['test_title'])
+    # df = pandas.read_csv('test.csv').to_html(classes='testclass')
+    return render_template('mysql.html', tables=[df], titles=['test_title'])
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
