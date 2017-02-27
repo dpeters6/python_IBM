@@ -37,13 +37,15 @@ def get_columns(table):
     cursor.execute("""SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`
                       WHERE `TABLE_SCHEMA`='{}'
                       AND `TABLE_NAME`='BLUEMIX'""".format(SCHEMA))
-    return cursor.fetchall()
+    return [tup[0] for tup in cursor.fetchall()]
 
-def query_bluemix():
+def query_bluemix(table):
     conn, cursor = get_mysql_conn()
-    cursor.execute("SELECT * FROM BLUEMIX")
+    cursor.execute("SELECT * FROM {}".format(table))
     raw_results = cursor.fetchall()
-    return pandas.DataFrame(raw_results)
+    columns = get_columns(table)
+    df = pandas.DataFrame(raw_results, columns=columns)
+    return df
 
 @app.route('/')
 def Welcome():
