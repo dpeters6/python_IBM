@@ -85,7 +85,7 @@ def show_mysql():
 def insert_mysql():
     df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
     text = request.form['text']
-    df = df.append({'first_name': 'bobby', 'last_name': 'joe'})
+    df = df.append([{'first_name': 'bobby', 'last_name': 'joe'}])
     return render_template('mysql.html', tables=[df], titles=['test_title'])
 
 port = os.getenv('PORT', '5000')
