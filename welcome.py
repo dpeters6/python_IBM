@@ -36,7 +36,7 @@ def get_columns(table):
     conn, cursor = get_mysql_conn()
     cursor.execute("""SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`
                       WHERE `TABLE_SCHEMA`='{}'
-                      AND `TABLE_NAME`='BLUEMIX'""".format(SCHEMA))
+                      AND `TABLE_NAME`='{}'""".format(SCHEMA, table))
     return [tup[0] for tup in cursor.fetchall()]
 
 def query_bluemix(table):
@@ -72,7 +72,7 @@ def SayHello(name):
 
 @app.route('/mysql')
 def showSql():
-    df = query_bluemix()
+    df = query_bluemix('BLUEMIX')
     return df.to_html()
 
 port = os.getenv('PORT', '5000')
