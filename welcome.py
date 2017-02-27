@@ -69,9 +69,9 @@ def Welcome():
 
 @app.route('/mysql')
 def showSql():
-    df = query_bluemix('BLUEMIX').to_html(classes='testclass')
-    # return df.to_html()
-    return render_template('static/mysql.html', tables=[df], titles=['test_title'])
+    df = query_bluemix('BLUEMIX')
+    return df.to_html()
+   # return render_template('static/mysql.html', tables=[df], titles=['test_title'])
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
