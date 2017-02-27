@@ -12,25 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, json, pandas
+import os, json, pandas, requests
 from mysql import connector
 from flask import Flask, jsonify
 
 app = Flask(__name__)
 
 vcap = json.loads(os.getenv("VCAP_SERVICES"))
-creds = vcap['mysql'][0]['credentials']
+mysql_creds = vcap['mysql'][0]['credentials']
+lt_creds = vcap['language_translator'][0]['credentials']
 SCHEMA = 'd4b34d227c2484ba6afcd7a02f3d7d977'
 
+
 def get_mysql_conn():
-    conn = connector.connect(host=creds['host'],
-                             port=creds['port'],
-                             user=creds['user'],
-                             password=creds['password'])
+    conn = connector.connect(host=mysql_creds['host'],
+                             port=mysql_creds['port'],
+                             user=mysql_creds['user'],
+                             password=mysql_creds['password'])
     conn.autocommit = True
     cursor = conn.cursor()
     cursor.execute("USE {}".format(SCHEMA))
     return conn, cursor
+
 
 def get_columns(table):
     conn, cursor = get_mysql_conn()
@@ -38,6 +41,7 @@ def get_columns(table):
                       WHERE `TABLE_SCHEMA`='{}'
                       AND `TABLE_NAME`='{}'""".format(SCHEMA, table))
     return [tup[0] for tup in cursor.fetchall()]
+
 
 def query_bluemix(table):
     conn, cursor = get_mysql_conn()
@@ -47,28 +51,21 @@ def query_bluemix(table):
     df = pandas.DataFrame(raw_results, columns=columns)
     return df
 
+
+def translate_text(text, source, target):
+    username = lt_creds['username']
+    password = lt_creds['password']
+    watsonUrl =  "{}/v2/translate?source={}&target={}&text={}".format(lt_creds['url'], source, target, text)
+    try:
+        r = requests.get(watsonUrl, auth=(username,password))
+        return r.text
+    except:
+        return False
+
 @app.route('/')
 def Welcome():
     return app.send_static_file('index.html')
 
-@app.route('/myapp')
-def WelcomeToMyapp():
-    return 'Welcome again to my app running on Bluemix!'
-
-@app.route('/api/people')
-def GetPeople():
-    list = [
-        {'name': 'John', 'age': 28},
-        {'name': 'Bill', 'val': 26}
-    ]
-    return jsonify(results=list)
-
-@app.route('/api/people/<name>')
-def SayHello(name):
-    message = {
-        'message': 'Hello ' + name
-    }
-    return jsonify(results=message)
 
 @app.route('/mysql')
 def showSql():

@@ -20,3 +20,4 @@ sqlalchemy
 #scikit-learn
 mysql-connector
 mysqlclient
+requests
