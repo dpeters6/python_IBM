@@ -71,7 +71,7 @@ def Welcome():
 
 @app.route('/mysql')
 def showSql():
-    df = query_bluemix('BLUEMIX').to_html(classes='testclass')
+    df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
     # df = pandas.read_csv('test.csv').to_html(classes='testclass')
     return render_template('mysql.html', tables=[df], titles=['test_title'])
 
