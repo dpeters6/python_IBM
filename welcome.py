@@ -14,12 +14,13 @@
 
 import os, json, pandas, requests
 from mysql import connector
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, redirect
 
 app = Flask(__name__, template_folder='static')
 
 env_var = os.getenv("VCAP_SERVICES")
-if env_var is not None:
+live = bool(env_var)
+if live:
     local = False
     vcap = json.loads(env_var)
     mysql_creds = vcap['mysql'][0]['credentials']
@@ -45,7 +46,9 @@ def get_columns(table):
     cursor.execute("""SELECT `COLUMN_NAME` FROM `INFORMATION_SCHEMA`.`COLUMNS`
                       WHERE `TABLE_SCHEMA`='{}'
                       AND `TABLE_NAME`='{}'""".format(SCHEMA, table))
-    return [tup[0] for tup in cursor.fetchall()]
+    rawdata = cursor.fetchall()
+    conn.disconnect()
+    return [tup[0] for tup in rawdata]
 
 
 def query_bluemix(table):
@@ -54,8 +57,13 @@ def query_bluemix(table):
     raw_results = cursor.fetchall()
     columns = get_columns(table)
     df = pandas.DataFrame(raw_results, columns=columns)
+    conn.disconnect()
     return df
 
+def insert_into_bluemix(firstname, lastname):
+    conn, cursor = get_mysql_conn()
+    cursor.execute("INSERT INTO BLUEMIX (firstname, lastname) VALUES ('{}', '{}')".format(firstname, lastname))
+    conn.disconnect()
 
 def translate_text(text, source, target):
     username = lt_creds['username']
@@ -69,24 +77,30 @@ def translate_text(text, source, target):
 
 @app.route('/')
 def Welcome():
-    return app.send_static_file('index.html')
+    return render_template('index.html')
 
 
-@app.route('/mysql')
+@app.route('/mysql', methods=['GET', 'POST'])
 def show_mysql():
+    if request.method == "POST":
+        text = request.form
+        if live:
+            insert_into_bluemix(text['firstname'], text['lastname'])
+        else:
+            return "Success. First: {} Last: {}".format(text['firstname']), text['lastname']
+    if live:
+        df = query_bluemix('BLUEMIX')
+    else:
+        df = pandas.read_csv('test.csv')
+    html_table = df.to_html(classes='testclass', index=False)
+    return render_template('mysql.html', tables=[html_table], titles=['test_title'])
 
-    query_bluemix('BLUEMIX').to_csv('name_table.csv')
-    df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
-    #df = pandas.read_csv('name_table.csv').to_html(classes='testclass')
-    return render_template('mysql.html', tables=[df], titles=['test_title'])
 
-
-@app.route('/mysql', methods=['POST'])
-def insert_mysql():
-    df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
-    text = request.form['text']
-    df = df.append([{'first_name': 'bobby', 'last_name': 'joe'}])
-    return render_template('mysql.html', tables=[df], titles=['test_title'])
+# @app.route('/mysql')
+# def insert_mysql():
+#     df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
+#     df = df.append([{'first_name': 'bobby', 'last_name': 'joe'}])
+#     return render_template('mysql.html', tables=[df], titles=['test_title'])
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
