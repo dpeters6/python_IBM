@@ -104,7 +104,7 @@ pre {
 	width: 60%;
 }
 
-.trans_button{
+.go_button{
 	-moz-box-shadow: 2px 2px 22px 1px #899599;
 	-webkit-box-shadow: 2px 2px 22px 1px #899599;
 	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd000', endColorstr='#ff6a00',GradientType=0);
