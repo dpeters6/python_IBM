@@ -85,8 +85,8 @@ def show_language_translator():
 
     if request.form == "POST":
         data = request.form
-        output = translate_text(data['text'], data['input_language'], data['output_language'])
-        return render_template('langtrans.html', translated=output)
+        translated = translate_text(data['text'], data['input_language'], data['output_language'])
+        return render_template('langtrans.html', translated=translated)
     else:
         return render_template('langtrans.html')
 
