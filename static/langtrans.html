@@ -1,7 +1,7 @@
 <!doctype html>
 <title xmlns="http://www.w3.org/1999/html">Language Translator</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='stylesheets/style.css') }}">
-<div class=page>
+<div class=page align="center">
   <h1>Convert text to a language of your choice</h1>
     <form action="{{ url_for('show_language_translator') }}" method="POST">
         <h2>Input Language</h2>
@@ -17,5 +17,5 @@
      <h1>No provided input</h1>
     {% endif %}
 
-  <h2>Back to <a href={{ url_for("Welcome") }}>Main Page</a></h2>
+  <form action="{{ url_for("Welcome") }}"><input class="nav_button" type="submit" value="Main Page" /></form>
 </div>
