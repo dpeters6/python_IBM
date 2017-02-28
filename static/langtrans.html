@@ -1,0 +1,21 @@
+<!doctype html>
+<title xmlns="http://www.w3.org/1999/html">Language Translator</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='stylesheets/style.css') }}">
+<div class=page>
+  <h1>Convert text to a language of your choice</h1>
+    <form action="{{ url_for('show_language_translator') }}" method="POST">
+        <h2>Input Language</h2>
+        <input type="radio" name="input_language", id = "English", value="en"> Option1 </input><br>
+        <h2>Output Language</h2>
+        <input type="radio" name="output_language", id = "Spanish", value="es"> Option2 </input><br>
+        <input type="text" name="text">
+        <input type="submit", value="Go">
+    </form>
+    {%  if translated %}
+     <h1>Output is: {{ translated }}!</h1>
+    {%  else  %}
+     <h1>No provided input</h1>
+    {% endif %}
+
+  <h2>Back to <a href={{ url_for("Welcome") }}>Main Page</a></h2>
+</div>
