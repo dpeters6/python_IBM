@@ -88,7 +88,7 @@ def show_language_translator():
             data = request.form
             text = data['text']
             in_lang = data['input_language']
-            out_lang = data['output_language'],
+            out_lang = data['output_language']
             translated = translate_text(text, in_lang, out_lang)
             return render_template('langtrans.html', translated=translated, languages=languages, def_text=text,
                                    prev_in=in_lang, prev_out=out_lang)
