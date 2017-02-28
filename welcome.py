@@ -62,7 +62,7 @@ def query_bluemix(table):
 
 def insert_into_bluemix(firstname, lastname):
     conn, cursor = get_mysql_conn()
-    cursor.execute("INSERT INTO BLUEMIX (firstname, lastname) VALUES ('{}', '{}')".format(firstname, lastname))
+    cursor.execute("INSERT INTO BLUEMIX (first_name, last_name) VALUES ('{}', '{}')".format(firstname, lastname))
     conn.disconnect()
 
 def translate_text(text, source, target):
@@ -94,13 +94,6 @@ def show_mysql():
         df = pandas.read_csv('test.csv')
     html_table = df.to_html(classes='testclass', index=False)
     return render_template('mysql.html', tables=[html_table], titles=['test_title'])
-
-
-# @app.route('/mysql')
-# def insert_mysql():
-#     df = query_bluemix('BLUEMIX').to_html(classes='testclass', index=False)
-#     df = df.append([{'first_name': 'bobby', 'last_name': 'joe'}])
-#     return render_template('mysql.html', tables=[df], titles=['test_title'])
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
