@@ -6,11 +6,11 @@
     <form action="{{ url_for('show_language_translator') }}" method="POST">
         <h2>Input Language</h2>
         {% for key, value in languages.items() %}
-        <input type="radio" name="input_language", id = value, value=value> {{ key }} </input><br>
+        <input type="radio" name="input_language", id = {{ value }}, value = {{ value }}> {{ key }} </input><br>
         {% endfor %}
         <h2>Output Language</h2>
         {% for key, value in languages.items() %}
-        <input type="radio" name="output_language", id = value, value=value> {{ key }} </input><br>
+        <input type="radio" name="output_language", id = {{ value }}, value = {{ value }} </input><br>
         {% endfor %}
         <input type="text" name="text">
         <input type="submit", value="Go">
