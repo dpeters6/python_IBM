@@ -103,11 +103,6 @@ def show_mysql():
     html_table = df.to_html(classes='testclass', index=False)
     return render_template('mysql.html', tables=[html_table], titles=['test_title'])
 
-
-@app.route('/translator', methods=['GET', 'POST'])
-def translator():
-    return "You made it here!"
-
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
     app.debug = True
