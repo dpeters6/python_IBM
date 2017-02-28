@@ -10,7 +10,7 @@
         {% endfor %}
         <h2>Output Language</h2>
         {% for key, value in languages.items() %}
-        <input type="radio" name="output_language", id = {{ value }}, value = {{ value }} </input><br>
+        <input type="radio" name="output_language", id = {{ value }}, value = {{ value }}> {{ key }} </input><br>
         {% endfor %}
         <input type="text" name="text">
         <input type="submit", value="Go">
