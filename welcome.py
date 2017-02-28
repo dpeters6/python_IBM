@@ -83,7 +83,7 @@ def Welcome():
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
     if live:
-        if request.form == "POST":
+        if request.method == "POST":
             data = request.form
             translated = translate_text(data['text'], data['input_language'], data['output_language'])
             text = data['text']
@@ -91,10 +91,10 @@ def show_language_translator():
             output_lang = data['output_language']
             return render_template('langtrans.html', translated=translated, text=text, input_lang=input_lang, output_lang=output_lang)
         else:
-            return render_template('langtrans.html', translated='here')
+            return render_template('langtrans.html', translated='here', text=request.form)
 
     else:
-        return render_template('langtrans.html', translated='test')
+        return render_template('langtrans.html', translated='test', text=request.form)
 
 
 @app.route('/mysql', methods=['GET', 'POST'])
