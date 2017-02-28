@@ -99,7 +99,7 @@ def show_mysql():
             # TODO sanitize text so no sql injection
             insert_into_bluemix(text['firstname'], text['lastname'])
         else:
-            return "Success. First: {} Last: {}".format(text['firstname']), text['lastname']
+            return "Success. First: {} Last: {}".format(text['firstname'], text['lastname'])
     if live:
         df = query_bluemix('BLUEMIX')
     else:
