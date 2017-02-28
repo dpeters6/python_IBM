@@ -91,7 +91,7 @@ def show_language_translator():
             output_lang = data['output_language']
             return render_template('langtrans.html', translated=translated, text=text, input_lang=input_lang, output_lang=output_lang)
         else:
-            return render_template('langtrans.html')
+            return render_template('langtrans.html', translated='here')
 
     else:
         return render_template('langtrans.html', translated='test')
