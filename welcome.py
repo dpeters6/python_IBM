@@ -82,7 +82,7 @@ def Welcome():
 
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
-    languages = {'English': 'en' ,'Spanish' : 'es', 'French': 'fr', 'Arabic': 'ar'}
+    languages = {'English': 'en', 'Spanish': 'es', 'French': 'fr', 'Arabic': 'ar'}
     if live:
         if request.method == "POST":
             data = request.form
@@ -104,7 +104,7 @@ def show_language_translator():
             text = data['text']
             in_lang = data['input_language']
             out_lang = data['output_language']
-            return render_template('langtrans.html', text=text, languages=languages, def_text=text,
+            return render_template('langtrans.html', languages=languages, def_text=text, translated=text,
                                    prev_in=in_lang, prev_out=out_lang)
         else:
             return render_template('langtrans.html', languages=languages, prev_in='en', prev_out='es', def_text='')
