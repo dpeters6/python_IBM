@@ -19,7 +19,7 @@
  */
 
 body,html {
-	background-color: #3b4b54; width : 100%;
+	background-color: #466BB0; width : 100%;
 	height: 100%;
 	margin: 0 auto;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
@@ -36,7 +36,7 @@ a:hover {
 }
 
 .newappIcon {
-	padding-top: 10%;
+	padding-top: 2%;
 	display: block;
 	margin: 0 auto;
 	padding-bottom: 2em;
@@ -50,7 +50,7 @@ h1 {
 
 .leftHalf {
 	float: left;
-	background-color: #26343f;
+	background-color: #466BB0;
 	width: 45%;
 	height: 100%;
 }
@@ -58,7 +58,7 @@ h1 {
 .rightHalf {
 	float: right;
 	width: 55%;
-	background-color: #313f4a;
+	background-color: #466BB0;
 	height: 100%;
 	overflow:auto;
 }
@@ -73,7 +73,7 @@ table {
 	width: 800px;
 	margin: 0 auto;
 	word-wrap: break-word;
-	padding-top:10%;
+	padding-top:1%;
 }
 
 th {
@@ -94,5 +94,18 @@ th, td {
 pre {
 	padding: 0;
 	margin: 0;
+}
+
+.nav_button {
+	background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
 }
 
