@@ -125,6 +125,10 @@ pre {
 	margin-top: 0px;
 }
 
+.trans_out {
+	color: green;
+}
+
 .nav_button {
 	-moz-box-shadow: 2px 2px 22px 1px #899599;
 	-webkit-box-shadow: 2px 2px 22px 1px #899599;
