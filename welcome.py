@@ -80,11 +80,19 @@ def Welcome():
     return render_template('index.html')
 
 
+@app.route('/language_translator')
+def show_language_translator():
+    data = request.form
+    output = translate_text(data['text'], data['input_language'], data['output_language'])
+    return render_template('langtrans.html', translated=output)
+
+
 @app.route('/mysql', methods=['GET', 'POST'])
 def show_mysql():
     if request.method == "POST":
         text = request.form
         if live:
+            # TODO sanitize text so no sql injection
             insert_into_bluemix(text['firstname'], text['lastname'])
         else:
             return "Success. First: {} Last: {}".format(text['firstname']), text['lastname']
