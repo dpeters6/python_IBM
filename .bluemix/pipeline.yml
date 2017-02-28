@@ -1,0 +1,31 @@
+---
+stages:
+- name: Build Stage
+  inputs:
+  - type: git
+    branch: master
+  triggers:
+  - type: commit
+  jobs:
+  - name: Build
+    type: builder
+- name: Deploy Stage
+  inputs:
+  - type: job
+    stage: Build Stage
+    job: Build
+  triggers:
+  - type: stage
+  jobs:
+  - name: Deploy App
+    type: deployer
+    target:
+      url: ${CF_TARGET_URL}
+      organization: ${CF_ORGANIZATION}
+      space: ${CF_SPACE}
+      application: ${CF_APP}
+    script: |-
+      #!/bin/bash
+      cf create-service mysql 100 "mysql-ky"
+      cf create-service language_translator standard "Language Translator-31"
+      cf push --random-route "${CF_APP}"

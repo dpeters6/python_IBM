@@ -4,6 +4,8 @@ applications:
   instances: 1
   domain: mybluemix.net
   name: nicholaiflask
-  host: nicholaiflask
   disk_quota: 1024M
   buildpack: python_buildpack
+  services:
+  - mysql-ky
+  - Language Translator-31

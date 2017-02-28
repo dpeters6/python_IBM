@@ -1,13 +1,6 @@
-# Python Flask Hello World Sample
+## Deployment Options
 
-This application demonstrates a simple, reusable Python web application based on the [Flask microframework](http://flask.pocoo.org/).
+Use the Deploy to Bluemix Toolchain button below to quickly create your own instance of this
+application in your Github and Bluemix environment.
 
-## Run the app locally
-
-1. [Install Python][]
-+ cd into this project's root directory
-+ Run `pip install -r requirements.txt` to install the app's dependencies
-+ Run `python welcome.py`
-+ Access the running app in a browser at <http://localhost:5000>
-
-[Install Python]: https://www.python.org/downloads/
+[![Deploy to Bluemix](https://developer.ibm.com/devops-services/wp-content/uploads/sites/42/2016/05/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy/?repository=https%3A%2F%2Fgithub.com%2FFrenchyRaoul%2Fnicholaiflask)
