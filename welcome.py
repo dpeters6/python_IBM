@@ -70,7 +70,7 @@ def translate_text(text, source, target):
     password = lt_creds['password']
     watsonUrl =  "{}/v2/translate?source={}&target={}&text={}".format(lt_creds['url'], source, target, text)
     try:
-        r = requests.get(watsonUrl, auth=(username,password))
+        r = requests.get(watsonUrl, auth=(username, password))
         return r.text
     except:
         return False
@@ -82,19 +82,22 @@ def Welcome():
 
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
+    languages = {'English': 'en' ,'Spanish' : 'es', 'French': 'fr', 'Arabic': 'ar'}
     if live:
         if request.method == "POST":
             data = request.form
             translated = translate_text(data['text'], data['input_language'], data['output_language'])
-            text = data['text']
-            input_lang = data['input_language']
-            output_lang = data['output_language']
-            return render_template('langtrans.html', translated=translated, text=text, input_lang=input_lang, output_lang=output_lang)
+            return render_template('langtrans.html', translated=translated, languages=languages)
         else:
-            return render_template('langtrans.html', translated=request.method, text=request.method)
+            return render_template('langtrans.html', languages=languages)
 
     else:
-        return render_template('langtrans.html', translated='test', text=request.form)
+        if request.method == "POST":
+            data = request.form
+            text = data['text']
+            return render_template('langtrans.html',  text=text, languages=languages)
+        else:
+            return render_template('langtrans.html', languages=languages)
 
 
 @app.route('/mysql', methods=['GET', 'POST'])
