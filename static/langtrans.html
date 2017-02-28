@@ -6,20 +6,27 @@
     <form action="{{ url_for('show_language_translator') }}" method="POST">
         <h2>Input Language</h2>
         {% for key, value in languages.items() %}
-        <input type="radio" name="input_language", id = {{ value }}, value = {{ value }}> {{ key }} </input><br>
+        <input type="radio" name="input_language" {% if value == prev_in %}checked='checked' {% endif %}
+               id = {{ value }}, value = {{ value }}> {{ key }} </input><br>
         {% endfor %}
         <h2>Output Language</h2>
         {% for key, value in languages.items() %}
-        <input type="radio" name="output_language", id = {{ value }}, value = {{ value }}> {{ key }} </input><br>
+        <input type="radio" name="output_language" {% if value == prev_out %}checked='checked' {% endif %}
+               id = {{ value }}, value = {{ value }}> {{ key }} </input><br>
         {% endfor %}
-        <input type="text" name="text">
-        <input type="submit", value="Go">
+        <input type="text" name="text" class="lang_text" value="{{ def_text }}">
+        <h2><input type="submit", value="Translate!" class="trans_button"></h2>
 
     </form>
     {%  if translated %}
-     <h1>Output is: {{ translated }}!</h1>
+     <h1>Output is: {{ translated }}</h1>
     {%  else  %}
-     <h1>No provided input</h1>
+     <h1> </h1>
     {% endif %}
+    <h2>{{ translated }}</h2>
+    <h2>{{ text }}</h2>
+    <h2>{{ input_lang }}</h2>
+    <h2>{{ output_lang }}</h2>
+
   <form action="{{ url_for("Welcome") }}"><input class="nav_button" type="submit" value="Main Page" /></form>
 </div>

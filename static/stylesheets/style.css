@@ -96,6 +96,35 @@ pre {
 	margin: 0;
 }
 
+.lang_text {
+	font-size: 24pt;
+	font-family: "Comic Sans MS";
+	margin-bottom: -10px;
+	margin-top: 20px;
+	width: 60%;
+}
+
+.trans_button{
+	-moz-box-shadow: 2px 2px 22px 1px #899599;
+	-webkit-box-shadow: 2px 2px 22px 1px #899599;
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd000', endColorstr='#ff6a00',GradientType=0);
+	background-color:#ffd000;
+	-moz-border-radius:19px;
+	-webkit-border-radius:19px;
+	border-radius:19px;
+	border:2px solid #d6bcd6;
+	display:inline-block;
+	cursor:pointer;
+	color:#1010e8;
+	font-family: "Comic Sans MS";
+	font-size: 14px;
+	font-weight:bold;
+	padding:2px 20px;
+	text-decoration:none;
+	margin-bottom: 10px;
+	margin-top: 0px;
+}
+
 .nav_button {
 	-moz-box-shadow: 2px 2px 22px 1px #899599;
 	-webkit-box-shadow: 2px 2px 22px 1px #899599;

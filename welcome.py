@@ -86,18 +86,25 @@ def show_language_translator():
     if live:
         if request.method == "POST":
             data = request.form
-            translated = translate_text(data['text'], data['input_language'], data['output_language'])
-            return render_template('langtrans.html', translated=translated, languages=languages)
+            text = data['text']
+            in_lang = data['input_language']
+            out_lang = data['output_language'],
+            translated = translate_text(text, in_lang, out_lang)
+            return render_template('langtrans.html', translated=translated, languages=languages, def_text=text,
+                                   prev_in=in_lang, prev_out=out_lang)
         else:
-            return render_template('langtrans.html', languages=languages)
+            return render_template('langtrans.html', languages=languages, def_text='', prev_in='en', prev_out='es')
 
     else:
         if request.method == "POST":
             data = request.form
             text = data['text']
-            return render_template('langtrans.html',  text=text, languages=languages)
+            in_lang = data['input_language']
+            out_lang = data['output_language']
+            return render_template('langtrans.html', text=text, languages=languages, def_text=text,
+                                   prev_in=in_lang, prev_out=out_lang)
         else:
-            return render_template('langtrans.html', languages=languages)
+            return render_template('langtrans.html', languages=languages, prev_in='en', prev_out='es', def_text='')
 
 
 @app.route('/mysql', methods=['GET', 'POST'])
