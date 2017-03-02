@@ -16,7 +16,9 @@
         <input type="submit", value="Insert", class="go_button">
     </form>
 
-
+    <form action="{{ url_for('show_mysql') }}" method = "RESET">
+        <input type="submit", value="Reset", class="go_button">
+    </form>
   <h3> {{ rendered }}</h3>
 
   <form action="{{ url_for("Welcome") }}"><input class="nav_button" type="submit" value="Main Page" /></form>
