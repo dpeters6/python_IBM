@@ -119,6 +119,11 @@ def translate_text(text, source, target):
 
 @app.route('/')
 def Welcome():
+    if live:
+        if not table_exists('BLUEMIX'):
+            create_table('BLUEMIX')
+        else:
+            reset_table('BLUEMIX')
     return render_template('index.html')
 
 
@@ -162,13 +167,14 @@ def show_mysql():
         else:
             return "Success. First: {} Last: {}".format(text['firstname'], text['lastname'])
     if live:
-        if not table_exists('BLUEMIX'):
-            create_table('BLUEMIX')
-        elif query_bluemix('BLUEMIX').shape[0] > 1:
-            reset_table('BLUEMIX')
         df = query_bluemix('BLUEMIX')
     else:
         df = pandas.read_csv('test.csv')
+
+    if request.method == "RESET" and live:
+        reset_table('BLUEMIX')
+        df = query_bluemix('BLUEMIX')
+
     html_table = df.to_html(classes='testclass', index=False)
     return render_template('mysql.html', tables=[html_table], titles=['test_title'], rendered=request.method)
 
