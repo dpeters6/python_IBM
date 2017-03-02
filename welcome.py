@@ -76,6 +76,15 @@ def reset_table(table):
         drop_table(table)
     create_table(table)
 
+@app.route('/reset', methods=['GET', 'POST'])
+def reset_table_from_html():
+    if request.method == "POST" and live:
+        reset_table('BLUEMIX')
+        df = query_bluemix('BLUEMIX')
+        html_table = df.to_html(classes='testclass', index=False)
+        return render_template('mysql.html', tables=[html_table], titles=['test_title'])
+
+
 def fake_reset(table):
     return str(table)
 
@@ -120,12 +129,8 @@ def translate_text(text, source, target):
 @app.route('/')
 def Welcome():
     if live:
-        if not table_exists('BLUEMIX'):
-            create_table('BLUEMIX')
-        else:
-            reset_table('BLUEMIX')
+        reset_table('BLUEMIX')
     return render_template('index.html')
-
 
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
@@ -170,13 +175,8 @@ def show_mysql():
         df = query_bluemix('BLUEMIX')
     else:
         df = pandas.read_csv('test.csv')
-
-    if request.method == "RESET" and live:
-        reset_table('BLUEMIX')
-        df = query_bluemix('BLUEMIX')
-
     html_table = df.to_html(classes='testclass', index=False)
-    return render_template('mysql.html', tables=[html_table], titles=['test_title'], rendered=request.method)
+    return render_template('mysql.html', tables=[html_table], titles=['test_title'], reset_table=lambda x: reset_table)
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
