@@ -166,6 +166,10 @@ def show_mysql():
     else:
         df = pandas.read_csv('test.csv')
     html_table = df.to_html(classes='testclass', index=False)
+    if not table_exists('name'):
+        create_table('name')
+    else:
+        reset_table('name')
     return render_template('mysql.html', tables=[html_table], titles=['test_title'])
 
 port = os.getenv('PORT', '5000')
