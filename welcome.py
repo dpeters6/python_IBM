@@ -164,13 +164,13 @@ def show_mysql():
     if live:
         if not table_exists('BLUEMIX'):
             create_table('BLUEMIX')
-        else:
+        elif query_bluemix('BLUEMIX').shape[0] > 1:
             reset_table('BLUEMIX')
         df = query_bluemix('BLUEMIX')
     else:
         df = pandas.read_csv('test.csv')
     html_table = df.to_html(classes='testclass', index=False)
-    return render_template('mysql.html', tables=[html_table], titles=['test_title'])
+    return render_template('mysql.html', tables=[html_table], titles=['test_title'], rendered=request.method)
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
