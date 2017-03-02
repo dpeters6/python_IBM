@@ -76,14 +76,6 @@ def reset_table(table):
         drop_table(table)
     create_table(table)
 
-@app.route('/reset', methods=['GET', 'POST'])
-def reset_table_from_html():
-    if request.method == "POST" and live:
-        reset_table('BLUEMIX')
-        df = query_bluemix('BLUEMIX')
-        html_table = df.to_html(classes='testclass', index=False)
-        return render_template('mysql.html', tables=[html_table], titles=['test_title'])
-
 
 def fake_reset(table):
     return str(table)
@@ -122,14 +114,15 @@ def translate_text(text, source, target):
     watsonUrl =  "{}/v2/translate?source={}&target={}&text={}".format(lt_creds['url'], source, target, text)
     try:
         r = requests.get(watsonUrl, auth=(username, password))
-        return r.text
+        return r.text if 'error' not in r.text else 'Could Not Convert {} to {}.'.format(text, target)
     except:
         return False
 
 @app.route('/')
 def Welcome():
     if live:
-        reset_table('BLUEMIX')
+        if not table_exists('BLUEMIX'):
+            create_table('BLUEMIX')
     return render_template('index.html')
 
 @app.route('/language_translator', methods=['GET', 'POST'])
@@ -177,6 +170,14 @@ def show_mysql():
         df = pandas.read_csv('test.csv')
     html_table = df.to_html(classes='testclass', index=False)
     return render_template('mysql.html', tables=[html_table], titles=['test_title'], reset_table=lambda x: reset_table)
+
+@app.route('/reset', methods=['GET', 'POST'])
+def reset_table_from_html():
+    if request.method == "POST" and live:
+        reset_table('BLUEMIX')
+        df = query_bluemix('BLUEMIX')
+        html_table = df.to_html(classes='testclass', index=False)
+        return render_template('mysql.html', tables=[html_table], titles=['test_title'])
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
