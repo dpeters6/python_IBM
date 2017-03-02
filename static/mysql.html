@@ -4,6 +4,7 @@
 <div class=page>
     <div align="center">
   <h1>MySQL Name Table</h1>
+    <h3><a href="{{ url_for('fake_reset', table="BLUEMIX") }}">Reset</a></h3>
   {% for table in tables %}
     <h2>{{titles[loop.index]}}</h2>
     {{ table|safe }}

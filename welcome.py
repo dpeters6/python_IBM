@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, json, pandas, requests
+import os, json, pandas, requests, logging
 from mysql import connector
 from flask import Flask, jsonify, render_template, request, redirect
 
@@ -30,6 +30,7 @@ if live:
 elif env_var is None:
     local = True
 
+
 def get_mysql_conn():
     conn = connector.connect(host=mysql_creds['host'],
                              port=mysql_creds['port'],
@@ -39,6 +40,44 @@ def get_mysql_conn():
     cursor = conn.cursor()
     cursor.execute("USE {}".format(SCHEMA))
     return conn, cursor
+
+
+def create_table(table):
+    conn, cursor = get_mysql_conn()
+    if table_exists(table):
+        logging.warning('Table already exists')
+        return
+    cols = {'first_name': "VARCHAR(32)",
+            'last_name': "VARCHAR(32)"}
+    col_str = ', '.join([key + ' ' + cols[key] for key in cols])
+    cursor.execute("""CREATE TABLE {}.{} ({})""".format(SCHEMA, table, col_str))
+    conn.disconnect()
+
+
+def drop_table(table):
+    conn, cursor = get_mysql_conn()
+    if table_exists(table):
+        cursor.execute("""DROP TABLE {}.{}""".format(SCHEMA, table))
+    conn.disconnect()
+
+
+def table_exists(table):
+    conn, cursor = get_mysql_conn()
+    cursor.execute("""SELECT * FROM information_schema.tables
+                      WHERE table_schema = '{}'
+                      AND table_name = '{}'
+                      LIMIT 1;""".format(SCHEMA, table))
+    results = cursor.fetchall()
+    return bool(results)
+
+
+def reset_table(table):
+    if table_exists(table):
+        drop_table(table)
+    create_table(table)
+
+def fake_reset(table):
+    return str(table)
 
 
 def get_columns(table):
@@ -60,10 +99,13 @@ def query_bluemix(table):
     conn.disconnect()
     return df
 
+
 def insert_into_bluemix(firstname, lastname):
     conn, cursor = get_mysql_conn()
-    cursor.execute("INSERT INTO BLUEMIX (first_name, last_name) VALUES ('{}', '{}')".format(firstname, lastname))
+    cursor.execute("INSERT INTO BLUEMIX (first_name, last_name) "
+                   "VALUES ('{}', '{}')".format(firstname, lastname))
     conn.disconnect()
+
 
 def translate_text(text, source, target):
     username = lt_creds['username']
