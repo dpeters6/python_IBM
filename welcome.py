@@ -17,6 +17,7 @@ from mysql import connector
 from flask import Flask, jsonify, render_template, request, redirect
 
 app = Flask(__name__, template_folder='static')
+languages = {'en': 'English', 'es': 'Spanish', 'fr': 'French', 'ar': 'Arabic'}
 
 env_var = os.getenv("VCAP_SERVICES")
 live = bool(env_var)
@@ -114,7 +115,8 @@ def translate_text(text, source, target):
     watsonUrl =  "{}/v2/translate?source={}&target={}&text={}".format(lt_creds['url'], source, target, text)
     try:
         r = requests.get(watsonUrl, auth=(username, password))
-        return r.text if 'error' not in r.text else 'Could Not Convert {} to {}.'.format(text, target)
+        return r.text if 'error' not in r.text \
+            else 'Unsupported translation (could not convert {} to {}).'.format(languages[source], languages[target])
     except:
         return False
 
@@ -127,7 +129,6 @@ def Welcome():
 
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
-    languages = {'English': 'en', 'Spanish': 'es', 'French': 'fr', 'Arabic': 'ar'}
     if live:
         if request.method == "POST":
             data = request.form
