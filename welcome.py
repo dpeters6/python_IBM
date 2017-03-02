@@ -162,11 +162,11 @@ def show_mysql():
         else:
             return "Success. First: {} Last: {}".format(text['firstname'], text['lastname'])
     if live:
-        df = query_bluemix('BLUEMIX')
-        if not table_exists('name'):
-            create_table('name')
+        if not table_exists('BLUEMIX'):
+            create_table('BLUEMIX')
         else:
-            reset_table('name')
+            reset_table('BLUEMIX')
+        df = query_bluemix('BLUEMIX')
     else:
         df = pandas.read_csv('test.csv')
     html_table = df.to_html(classes='testclass', index=False)
