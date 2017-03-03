@@ -120,6 +120,7 @@ def translate_text(text, source, target):
     except:
         return False
 
+
 @app.route('/')
 def Welcome():
     if live:
