@@ -11,7 +11,7 @@
         {% endfor %}
         <h2>Output Language</h2>
         {% for key, value in languages.items() %}
-        <input type="radio" name="input_language" {% if key == prev_out %}checked='checked' {% endif %}
+        <input type="radio" name="output_language" {% if key == prev_out %}checked='checked' {% endif %}
                id = {{ key }}, key = {{ key }}> {{ value }} </input><br>
         {% endfor %}
         <input type="text" name="text" class="lang_text" value="{{ def_text }}">
