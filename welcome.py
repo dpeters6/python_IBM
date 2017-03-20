@@ -128,6 +128,7 @@ def Welcome():
             create_table('BLUEMIX')
     return render_template('index.html')
 
+
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
     if live:
@@ -139,11 +140,15 @@ def show_language_translator():
             if in_lang == out_lang:
                 translated = text
             else:
-                translated = translate_text(text, in_lang, out_lang)
+                if not isinstance(in_lang, str) or not isinstance(out_lang, str):
+                    translated = ''
+                else:
+                    translated = translate_text(text, in_lang, out_lang)
             return render_template('langtrans.html', translated=translated, languages=languages, def_text=text,
                                    prev_in=in_lang, prev_out=out_lang)
         else:
-            return render_template('langtrans.html', languages=languages, def_text='', prev_in='en', prev_out='es')
+            return render_template('langtrans.html', languages=languages, def_text='', prev_in='es',
+                                   prev_out='es')
 
     else:
         if request.method == "POST":
@@ -152,7 +157,7 @@ def show_language_translator():
             in_lang = data['input_language']
             out_lang = data['output_language']
             return render_template('langtrans.html', languages=languages, def_text=text, translated=text,
-                                   prev_in=in_lang, prev_out=out_lang)
+                                   prev_in=in_lang, prev_out=out_lang, some_text='some_text')
         else:
             return render_template('langtrans.html', languages=languages, prev_in='en', prev_out='es', def_text='')
 
