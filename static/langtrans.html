@@ -6,13 +6,13 @@
     <form action="{{ url_for('show_language_translator') }}" method="POST">
         <h2>Input Language</h2>
         {% for key, value in languages.items() %}
-        <input type="radio" name="input_language" {% if key == prev_in %}checked='checked' {% endif %}
-               id = {{ key }}, key = {{ key }}> {{ value }} </input><br>
+        <input type="radio" name="input_language" {% if key == prev_in %}checked="checked"{% endif %}
+               id = {{ key }} , value = {{ key }}> {{ value }} </input><br>
         {% endfor %}
         <h2>Output Language</h2>
         {% for key, value in languages.items() %}
         <input type="radio" name="output_language" {% if key == prev_out %}checked='checked' {% endif %}
-               id = {{ key }}, key = {{ key }}> {{ value }} </input><br>
+               id = {{ key }} , value = {{ key }}> {{ value }} </input><br>
         {% endfor %}
         <input type="text" name="text" class="lang_text" value="{{ def_text }}">
         <h2><input type="submit", value="Translate!" class="trans_button"></h2>
@@ -22,6 +22,11 @@
      <h1>Output is: <span class="trans_out">{{ translated }}</span></h1>
     {%  else  %}
      <h1> </h1>
+    {% endif %}
+    {% if some_text %}
+     <h1> Some text: {{some_text}} In lang: {{in_lang}} Out lang: {{out_lang}}</h1>
+    {% else %}
+     <h1></h1>
     {% endif %}
 
   <form action="{{ url_for("Welcome") }}"><input class="nav_button" type="submit" value="Main Page" /></form>
