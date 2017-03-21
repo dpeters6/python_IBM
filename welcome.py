@@ -34,11 +34,11 @@ elif env_var is None:
 
 
 def get_mysql_conn():
-    conn = connector.connect(#host=compose_mysql_creds['host'],
-                             #port=compose_mysql_creds['port'],
-                             #user=compose_mysql_creds['user'],
-                             #password=compose_mysql_creds['password'],
-                             ssl_cert=compose_mysql_creds['ca_certificate_base64'])
+    conn = connector.connect(host=mysql_creds['host'],
+                             port=mysql_creds['port'],
+                             user=mysql_creds['user'],
+                             password=mysql_creds['password'])
+                             #ssl_cert=compose_mysql_creds['ca_certificate_base64'])
     conn.autocommit = True
     cursor = conn.cursor()
     cursor.execute("USE {}".format(SCHEMA))
