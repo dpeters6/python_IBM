@@ -27,6 +27,8 @@ if live:
     mysql_creds = vcap['mysql'][0]['credentials']
     lt_creds = vcap['language_translator'][0]['credentials']
     compose_mysql_creds = vcap['compose-for-mysql'][0]['credentials']
+    compose_mysql_host = compose_mysql_creds['uri_cli'].split('--host ')[1]
+    compose_mysql_port = compose_mysql_creds['uri_cli'].split('--port ')[1]
     SCHEMA = 'd4b34d227c2484ba6afcd7a02f3d7d977'
 
 elif env_var is None:
@@ -34,11 +36,11 @@ elif env_var is None:
 
 
 def get_mysql_conn():
-    conn = connector.connect(host=mysql_creds['host'],
-                             port=mysql_creds['port'],
-                             user=mysql_creds['user'],
-                             password=mysql_creds['password'])
-                             #ssl_cert=compose_mysql_creds['ca_certificate_base64'])
+    conn = connector.connect(host=compose_mysql_host,#mysql_creds['host']
+                             port=compose_mysql_port,
+                             #user=mysql_creds['user'],
+                             #password=mysql_creds['password'],
+                             ssl_ca=compose_mysql_creds['ca_certificate_base64'])
     conn.autocommit = True
     cursor = conn.cursor()
     cursor.execute("USE {}".format(SCHEMA))
@@ -134,7 +136,7 @@ def Welcome():
 @app.route('/credentials', methods=['GET', 'POST'])
 def show_creds():
     if live:
-        return render_template('show_creds.html', vcap=compose_mysql_creds)
+        return render_template('show_creds.html', vcap=compose_mysql_creds, host=compose_mysql_host, port=compose_mysql_port)
     else:
         return Welcome()
 
