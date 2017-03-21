@@ -129,6 +129,13 @@ def Welcome():
     return render_template('index.html')
 
 
+@app.route('/credentials', methods=['GET', 'POST'])
+def show_creds():
+    if live:
+        return render_template('show_creds.html', vcap=vcap)
+    else:
+        return Welcome()
+
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
     if live:
