@@ -27,8 +27,8 @@ if live:
     mysql_creds = vcap['mysql'][0]['credentials']
     lt_creds = vcap['language_translator'][0]['credentials']
     compose_mysql_creds = vcap['compose-for-mysql'][0]['credentials']
-    compose_mysql_host = compose_mysql_creds['uri_cli'].split('--host ')[1]
-    compose_mysql_port = compose_mysql_creds['uri_cli'].split('--port ')[1]
+    compose_mysql_host = compose_mysql_creds['uri_cli'].split('--host')[1].split('--')[0].replace(' ', '')
+    compose_mysql_port = compose_mysql_creds['uri_cli'].split('--port')[1].split('--')[0].replace(' ', '')
     SCHEMA = 'd4b34d227c2484ba6afcd7a02f3d7d977'
 
 elif env_var is None:
