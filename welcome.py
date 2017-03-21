@@ -36,8 +36,8 @@ elif env_var is None:
 
 
 def get_mysql_conn():
-    conn = connector.connect(host=compose_mysql_host,#mysql_creds['host']
-                             port=compose_mysql_port,
+    conn = connector.connect(#host=compose_mysql_host,#mysql_creds['host']
+                             #port=compose_mysql_port,
                              #user=mysql_creds['user'],
                              #password=mysql_creds['password'],
                              ssl_ca=compose_mysql_creds['ca_certificate_base64'])
