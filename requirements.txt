@@ -12,12 +12,6 @@ cython
 numpy
 pandas
 matplotlib
-ipython
-jupyter
 sqlalchemy
-#cloudant>=2.0.0b1
-#scipy
-#scikit-learn
 mysql-connector
-mysqlclient
 requests

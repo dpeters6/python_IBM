@@ -69,6 +69,7 @@ def table_exists(table):
                       AND table_name = '{}'
                       LIMIT 1;""".format(SCHEMA, table))
     results = cursor.fetchall()
+    conn.disconnect()
     return bool(results)
 
 
