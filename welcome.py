@@ -133,7 +133,7 @@ def Welcome():
 @app.route('/credentials', methods=['GET', 'POST'])
 def show_creds():
     if live:
-        return render_template('show_creds.html', vcap=compose_mysql_creds, host=compose_mysql_host, port=compose_mysql_port)
+        return render_template('show_creds.html', vcap=mysql_creds)
     else:
         return Welcome()
 
