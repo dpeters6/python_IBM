@@ -24,23 +24,19 @@ live = bool(env_var)
 if live:
     local = False
     vcap = json.loads(env_var)
-    mysql_creds = vcap['mysql'][0]['credentials']
+    mysql_creds = vcap['cleardb'][0]['credentials']
     lt_creds = vcap['language_translator'][0]['credentials']
-    compose_mysql_creds = vcap['compose-for-mysql'][0]['credentials']
-    compose_mysql_host = compose_mysql_creds['uri_cli'].split('--host')[1].split('--')[0].replace(' ', '')
-    compose_mysql_port = int(compose_mysql_creds['uri_cli'].split('--port')[1].split('--')[0].replace(' ', ''))
-    SCHEMA = 'd4b34d227c2484ba6afcd7a02f3d7d977'
+    SCHEMA = mysql_creds['name']
 
 elif env_var is None:
     local = True
 
 
 def get_mysql_conn():
-    conn = connector.connect(#host=compose_mysql_host,#mysql_creds['host']
-                             port=compose_mysql_port,
-                             #user=mysql_creds['user'],
-                             #password=mysql_creds['password'],
-                             ssl_ca=compose_mysql_creds['ca_certificate_base64'])
+    conn = connector.connect(host=mysql_creds['hostname'],
+                             user=mysql_creds['username'],
+                             password=mysql_creds['password'],
+                             port=mysql_creds['port'])
     conn.autocommit = True
     cursor = conn.cursor()
     cursor.execute("USE {}".format(SCHEMA))
