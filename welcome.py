@@ -20,11 +20,7 @@ app = Flask(__name__, template_folder='static')
 languages = {'en': 'English', 'es': 'Spanish', 'fr': 'French', 'ar': 'Arabic'}
 
 env_var = os.getenv("VCAP_SERVICES")
-if not bool(env_var):
-    with open('nicholaipython_vcap.json', 'r') as fin:
-        vcap = json.load(fin)
-else:
-    vcap = json.loads(env_var)
+vcap = json.loads(env_var)
 mysql_creds = vcap['cleardb'][0]['credentials']
 lt_creds = vcap['language_translator'][0]['credentials']
 SCHEMA = mysql_creds['name']
@@ -174,4 +170,4 @@ def reset_table_from_html():
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
     app.debug = True
-    app.run(host='0.0.0.0', port=int(port))
+    app.run(host='0.0.0.0', port=int(port), use_reloader=False)
