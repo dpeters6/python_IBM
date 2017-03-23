@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p>
+
+</p>
+</body>
+</html>
+
+
+<!doctype html>
+<title xmlns="http://www.w3.org/1999/html">Language Translator</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='stylesheets/style.css') }}">
+<div class=page align="center">
+  <h1>Get Weather Plots!</h1>
+    <form action="{{ url_for('get_weather') }}" method="POST">
+        <input type="text" name="zipcode" class="weather_text">
+        <h2><input type="submit", value="Forecast!" class="trans_button"></h2>
+
+    </form>
+    {% if result != None %}
+        <h1>Forecast Plots for Zipcode {{ zipcode }}</h1>
+    <img src="data:image/png;base64,{{ result }}" width="500">
+    {% endif %}
+
+  <form action="{{ url_for("Welcome") }}"><input class="nav_button" type="submit" value="Main Page" /></form>
+</div>

@@ -104,6 +104,15 @@ pre {
 	width: 60%;
 }
 
+
+.weather_text {
+	font-size: 24pt;
+	font-family: "Comic Sans MS";
+	margin-bottom: -10px;
+	margin-top: 20px;
+	width: 10%;
+}
+
 .go_button{
 	-moz-box-shadow: 2px 2px 22px 1px #899599;
 	-webkit-box-shadow: 2px 2px 22px 1px #899599;

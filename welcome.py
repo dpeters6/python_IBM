@@ -12,7 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os, json, pandas, requests, logging
+import os, json, requests, logging, base64
+from datetime import datetime
+import numpy as np
+import pandas as pd
+import matplotlib as mpl
+from matplotlib import pyplot as plt
+from io import BytesIO
 from mysql import connector
 from flask import Flask, jsonify, render_template, request, redirect
 
@@ -23,6 +29,7 @@ env_var = os.getenv("VCAP_SERVICES")
 vcap = json.loads(env_var)
 mysql_creds = vcap['cleardb'][0]['credentials']
 lt_creds = vcap['language_translator'][0]['credentials']
+weather_creds = json.loads(os.getenv('VCAP_SERVICES'))['weatherinsights'][0]['credentials']
 SCHEMA = mysql_creds['name']
 
 
@@ -116,6 +123,63 @@ def translate_text(text, source, target):
         return False
 
 
+def get_weather_df(username, password, port, url, zipcode):
+    line = 'https://'+username+':'+password+'@twcservice.mybluemix.net:'+port+'/api/weather/v1/location/'+zipcode+'%3A4%3AUS/forecast/hourly/48hour.json?units=m&language=en-US'
+    raw = requests.get(line)
+    weather = json.loads(raw.text)
+    df = pd.DataFrame.from_dict(weather['forecasts'][0],orient='index').transpose()
+    for forecast in weather['forecasts'][1:]:
+      df = pd.concat([df, pd.DataFrame.from_dict(forecast,orient='index').transpose()])
+
+    time = np.array(df['fcst_valid_local'])
+    for row in range(len(time)):
+      time[row] = datetime.strptime(time[row], '%Y-%m-%dT%H:%M:%S%z')
+
+    df = df.set_index(time)
+    return df
+
+
+def get_weather_plots(df):
+    plt.ioff()
+    df['rain'] = df['pop'].as_matrix()
+
+    # tmean = df['temp'].rolling(window=4, center=True).mean()
+    # rhmean = df['rh'].rolling(window=4, center=True).mean()
+    # cldsmean = df['clds'].rolling(window=4, center=True).mean()
+    # wspdmean = df['wspd'].rolling(window=4, center=True).mean()
+    tmean = pd.rolling_mean(df['temp'], window=4, center=True)
+    rhmean = pd.rolling_mean(df['rh'], window=4, center=True)
+    cldsmean = pd.rolling_mean(df['clds'], window=4, center=True)
+    wspdmean = pd.rolling_mean(df['wspd'], window=4, center=True)
+
+    mpl.style.use('bmh')
+
+    fig, axes = plt.subplots(nrows=5, ncols=1, figsize=(8, 10))
+
+    df['temp'].plot(ax=axes[0], color='dodgerblue',sharex=True)
+    tmean.plot(ax=axes[0], kind='line',color='darkorchid', sharex=True)
+    axes[0].set_ylabel('temperature [$^o$C]')
+
+    df['rain'].plot(ax=axes[1], color='dodgerblue',sharex=True)
+    axes[1].set_ylabel('chance of rain [%]')
+
+    df['rh'].plot(ax=axes[2], color='dodgerblue',sharex=True)
+    rhmean.plot(ax=axes[2], kind='line',color='darkorchid', sharex=True)
+    axes[2].set_ylabel('humidity [%]')
+
+    df['clds'].plot(ax=axes[3], color='dodgerblue',sharex=True)
+    cldsmean.plot(ax=axes[3], kind='line',color='darkorchid', sharex=True)
+    axes[3].set_ylabel('clouds [%]')
+
+    df['wspd'].plot(ax=axes[4], color='dodgerblue',sharex=False)
+    wspdmean.plot(ax=axes[4], kind='line',color='darkorchid', sharex=True)
+    axes[4].set_ylabel('wind [m s$^{-1}$]')
+
+    weatherdat = BytesIO()
+    fig.savefig(weatherdat, format='png')
+    weatherdat.seek(0)
+    return weatherdat
+
 @app.route('/')
 def Welcome():
     if not table_exists('BLUEMIX'):
@@ -166,6 +230,23 @@ def reset_table_from_html():
         df = query_bluemix('BLUEMIX')
         html_table = df.to_html(classes='testclass', index=False)
         return render_template('mysql.html', tables=[html_table], titles=['test_title'])
+
+
+@app.route('/weather', methods=['GET', 'POST'])
+def get_weather():
+    if request.method == 'POST':
+        text = request.form
+        zipcode = text['zipcode']
+        df = get_weather_df(weather_creds['username'], weather_creds['password'],
+                            str(weather_creds['port']), weather_creds['url'], zipcode)
+        plotbytes = get_weather_plots(df)
+        weatherdat = base64.encodebytes(plotbytes.read()).decode('ascii')
+    else:
+        weatherdat = None
+        zipcode = None
+    return render_template('weather.html', result=weatherdat, zipcode=zipcode)
+
+
 
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
