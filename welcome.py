@@ -156,7 +156,7 @@ def show_language_translator():
         return render_template('langtrans.html', translated=translated, languages=languages, def_text=text,
                                prev_in=in_lang, prev_out=out_lang)
     else:
-        return render_template('langtrans.html', languages=languages, def_text='', prev_in='es',
+        return render_template('langtrans.html', languages=languages, def_text='', prev_in='en',
                                prev_out='es')
 
 
