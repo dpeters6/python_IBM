@@ -12,6 +12,8 @@ cython
 numpy
 pandas
 matplotlib
+ipython
+jupyter
 sqlalchemy
 mysql-connector
 requests
