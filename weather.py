@@ -6,6 +6,8 @@ import matplotlib as mpl
 import numpy as np
 import pandas as pd
 import requests
+
+mpl.use('agg')
 from matplotlib import pyplot as plt
 
 
