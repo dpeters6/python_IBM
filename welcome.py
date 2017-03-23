@@ -193,8 +193,6 @@ def get_weather():
         zipcode = None
     return render_template('weather.html', result=weatherdat, zipcode=zipcode)
 
-
-
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
     app.debug = True
