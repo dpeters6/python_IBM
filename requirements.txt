@@ -15,4 +15,3 @@ matplotlib
 sqlalchemy
 mysql-connector
 requests
-tkinter
