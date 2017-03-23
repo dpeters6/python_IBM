@@ -26,6 +26,6 @@ stages:
       application: ${CF_APP}
     script: |-
       #!/bin/bash
-      cf create-service mysql 100 "mysql-ky"
+      cf create-service cleardb spark "ClearDB MySQL Database-es"
       cf create-service language_translator standard "Language Translator-31"
       cf push --random-route "${CF_APP}"
