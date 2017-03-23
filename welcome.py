@@ -30,7 +30,10 @@ env_var = os.getenv("VCAP_SERVICES")
 vcap = json.loads(env_var)
 mysql_creds = vcap['cleardb'][0]['credentials']
 lt_creds = vcap['language_translator'][0]['credentials']
-weather_creds = json.loads(os.getenv('VCAP_SERVICES'))['weatherinsights'][0]['credentials']
+try:
+    weather_creds = json.loads(os.getenv('VCAP_SERVICES'))['weatherinsights'][0]['credentials']
+except:
+    pass
 SCHEMA = mysql_creds['name']
 
 
