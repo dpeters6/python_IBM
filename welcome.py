@@ -20,16 +20,14 @@ app = Flask(__name__, template_folder='static')
 languages = {'en': 'English', 'es': 'Spanish', 'fr': 'French', 'ar': 'Arabic'}
 
 env_var = os.getenv("VCAP_SERVICES")
-live = bool(env_var)
-if live:
-    local = False
+if not bool(env_var):
+    with open('nicholaipython_vcap.json', 'r') as fin:
+        vcap = json.load(fin)
+else:
     vcap = json.loads(env_var)
-    mysql_creds = vcap['cleardb'][0]['credentials']
-    lt_creds = vcap['language_translator'][0]['credentials']
-    SCHEMA = mysql_creds['name']
-
-elif env_var is None:
-    local = True
+mysql_creds = vcap['cleardb'][0]['credentials']
+lt_creds = vcap['language_translator'][0]['credentials']
+SCHEMA = mysql_creds['name']
 
 
 def get_mysql_conn():
@@ -124,71 +122,50 @@ def translate_text(text, source, target):
 
 @app.route('/')
 def Welcome():
-    if live:
-        if not table_exists('BLUEMIX'):
-            create_table('BLUEMIX')
+    if not table_exists('BLUEMIX'):
+        create_table('BLUEMIX')
     return render_template('index.html')
 
 
 @app.route('/credentials', methods=['GET', 'POST'])
 def show_creds():
-    if live:
-        return render_template('show_creds.html', vcap=mysql_creds)
-    else:
-        return Welcome()
+    return render_template('show_creds.html', vcap=mysql_creds)
+
 
 @app.route('/language_translator', methods=['GET', 'POST'])
 def show_language_translator():
-    if live:
-        if request.method == "POST":
-            data = request.form
-            text = data['text']
-            in_lang = data['input_language']
-            out_lang = data['output_language']
-            if in_lang == out_lang:
-                translated = text
+    if request.method == "POST":
+        data = request.form
+        text = data['text']
+        in_lang = data['input_language']
+        out_lang = data['output_language']
+        if in_lang == out_lang:
+            translated = text
+        else:
+            if not isinstance(in_lang, str) or not isinstance(out_lang, str):
+                translated = ''
             else:
-                if not isinstance(in_lang, str) or not isinstance(out_lang, str):
-                    translated = ''
-                else:
-                    translated = translate_text(text, in_lang, out_lang)
-            return render_template('langtrans.html', translated=translated, languages=languages, def_text=text,
-                                   prev_in=in_lang, prev_out=out_lang)
-        else:
-            return render_template('langtrans.html', languages=languages, def_text='', prev_in='es',
-                                   prev_out='es')
-
+                translated = translate_text(text, in_lang, out_lang)
+        return render_template('langtrans.html', translated=translated, languages=languages, def_text=text,
+                               prev_in=in_lang, prev_out=out_lang)
     else:
-        if request.method == "POST":
-            data = request.form
-            text = data['text']
-            in_lang = data['input_language']
-            out_lang = data['output_language']
-            return render_template('langtrans.html', languages=languages, def_text=text, translated=text,
-                                   prev_in=in_lang, prev_out=out_lang, some_text='some_text')
-        else:
-            return render_template('langtrans.html', languages=languages, prev_in='en', prev_out='es', def_text='')
+        return render_template('langtrans.html', languages=languages, def_text='', prev_in='es',
+                               prev_out='es')
 
 
 @app.route('/mysql', methods=['GET', 'POST'])
 def show_mysql():
     if request.method == "POST":
         text = request.form
-        if live:
-            # TODO sanitize text so no sql injection
-            insert_into_bluemix(text['firstname'], text['lastname'])
-        else:
-            return "Success. First: {} Last: {}".format(text['firstname'], text['lastname'])
-    if live:
-        df = query_bluemix('BLUEMIX')
-    else:
-        df = pandas.read_csv('test.csv')
+        insert_into_bluemix(text['firstname'], text['lastname'])
+    df = query_bluemix('BLUEMIX')
     html_table = df.to_html(classes='testclass', index=False)
     return render_template('mysql.html', tables=[html_table], titles=['test_title'], reset_table=lambda x: reset_table)
 
+
 @app.route('/reset', methods=['GET', 'POST'])
 def reset_table_from_html():
-    if request.method == "POST" and live:
+    if request.method == "POST":
         reset_table('BLUEMIX')
         df = query_bluemix('BLUEMIX')
         html_table = df.to_html(classes='testclass', index=False)
