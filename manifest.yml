@@ -7,5 +7,5 @@ applications:
   disk_quota: 1024M
   buildpack: python_buildpack
   services:
-  - mysql-ky
+  - Language Translator-31
   - ClearDB MySQL Database-es
